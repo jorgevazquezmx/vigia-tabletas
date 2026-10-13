@@ -81,7 +81,7 @@ public class AlarmaServicio extends Service {
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "vigia:alarma"); wl.acquire(11 * 60 * 1000L);
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        try { volPrevio = am.getStreamVolume(AudioManager.STREAM_ALARM); am.setStreamVolume(AudioManager.STREAM_ALARM, am.getStreamMaxVolume(AudioManager.STREAM_ALARM), 0); } catch (Exception e) { }
+        Volumen.alMaximo(this);   // v1.0.5: ya no se regresa al volumen anterior; queda al máximo
         try { tono = new ToneGenerator(AudioManager.STREAM_ALARM, 100); } catch (Exception e) { tono = null; }
         tts = new TextToSpeech(this, s -> {
             if (s == TextToSpeech.SUCCESS) {
@@ -115,7 +115,6 @@ public class AlarmaServicio extends Service {
         h.removeCallbacksAndMessages(null);
         try { if (tts != null) { tts.stop(); tts.shutdown(); } } catch (Exception e) { }
         try { if (tono != null) tono.release(); } catch (Exception e) { }
-        try { if (volPrevio >= 0) ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).setStreamVolume(AudioManager.STREAM_ALARM, volPrevio, 0); } catch (Exception e) { }
         try { if (wl != null && wl.isHeld()) wl.release(); } catch (Exception e) { }
         stopForeground(true); stopSelf();
     }

@@ -37,13 +37,14 @@ public class Puente {
     @JavascriptInterface public boolean vozLista() { return ttsListo; }
 
     /** Lee un texto en voz alta (motor de voz de Android, funciona sin internet). */
-    @JavascriptInterface public void decir(String texto) { if (ttsListo) tts.speak(texto, TextToSpeech.QUEUE_FLUSH, null, "vigia-d"); }
+    @JavascriptInterface public void decir(String texto) { Volumen.alMaximo(act); if (ttsListo) tts.speak(texto, TextToSpeech.QUEUE_FLUSH, null, "vigia-d"); }
 
     /** Programa las alarmas de las próximas horas: [{k, at, texto}] */
     @JavascriptInterface public void programar(String json) { Alarmas.programar(act, json); }
 
     /** Empieza a sonar ya (si no está sonando esa misma alarma). */
     @JavascriptInterface public void alarma(String clave, String texto) {
+        Volumen.alMaximo(act);
         Intent s = new Intent(act, AlarmaServicio.class); s.setAction(AlarmaServicio.SONAR);
         s.putExtra("clave", clave); s.putExtra("texto", texto);
         if (Build.VERSION.SDK_INT >= 26) act.startForegroundService(s); else act.startService(s);

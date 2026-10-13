@@ -179,7 +179,7 @@ public class MainActivity extends Activity {
     }
 
     @Override protected void onNewIntent(Intent i) { super.onNewIntent(i); setIntent(i); }
-    @Override protected void onResume() { super.onResume(); web.onResume(); web.evaluateJavascript("window.dispatchEvent(new Event('vigia-nativo'))", null); }
+    @Override protected void onResume() { super.onResume(); Volumen.alMaximo(this); web.onResume(); web.evaluateJavascript("window.dispatchEvent(new Event('vigia-nativo'))", null); }
     @Override protected void onPause() { super.onPause(); }
     @Override public void onBackPressed() { if (web.canGoBack()) web.goBack(); }
 }
