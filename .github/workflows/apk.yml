@@ -24,12 +24,16 @@ jobs:
             git add firma/vigia.jks.b64; git commit -m "Llave de firma de la app [skip ci]"; git push
           fi
           base64 -d firma/vigia.jks.b64 > $RUNNER_TEMP/vigia.jks
-      - name: Icono
+      - name: Icono (logo Miztli desde app/icono.png; si no existe, una V)
         run: |
           sudo apt-get install -y -qq imagemagick >/dev/null
           for d in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
             n=${d##*:}; mkdir -p app/src/main/res/mipmap-${d%%:*}
-            convert -size ${n}x${n} xc:'#0f2a44' -fill '#ffffff' -gravity center -pointsize $((n*62/100)) -annotate +0+0 'V' app/src/main/res/mipmap-${d%%:*}/ic_launcher.png
+            if [ -f app/icono.png ]; then
+              convert app/icono.png -resize ${n}x${n} app/src/main/res/mipmap-${d%%:*}/ic_launcher.png
+            else
+              convert -size ${n}x${n} xc:'#0f2a44' -fill '#ffffff' -gravity center -pointsize $((n*62/100)) -annotate +0+0 'V' app/src/main/res/mipmap-${d%%:*}/ic_launcher.png
+            fi
           done
       - name: Compilar
         env:
